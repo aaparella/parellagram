@@ -21,12 +21,12 @@ type Post struct {
 
 const POST_PREVIEW_TEMPLATE = `
 	{{ define "post-preview" }}
-	<a href="/post/{{ .Filename }}">
 		<div id="post_preview">
+		<a href="/post/{{ .Filename }}">
 			<div class="post_title">{{ .Title }}</div>
 			<div class="post_date">{{ .Date }}</div>
+		</a>
 		</div>
-	</a>
 	{{ end }}
 	`
 
@@ -36,6 +36,17 @@ const POSTS_PREVIEW_TEMPLATE = `
 		{{ range . }}
 			{{ template "post-preview" . }}
 		{{ end }}
+		</div>
+	{{ end }}
+	`
+
+const POST_TEMPLATE = `
+	{{ define "post" }}
+		<div id="post">
+			<div id="post_title">{{ .Title }}</div>
+			<div id="post_date">{{ .Date }}</div>
+			<br /><br />
+			<div id="post_body">{{ .Content }}</div>
 		</div>
 	{{ end }}
 	`

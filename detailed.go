@@ -23,7 +23,7 @@ const DETAILED_PAGE_TEMPLATE = `
 				<a href="/">
 					<h1 id="header">Parellagram</h1>
 				</a>
-				{{ template "post-preview" .Post }}
+				{{ template "post" .Post }}
 			</body>
 		</html>
 	`
@@ -59,7 +59,7 @@ func buildDetailedPage(page DetailedPage, w io.Writer) {
 
 	parse(DETAILED_PAGE_TEMPLATE)
 	parse(STYLES_TEMPLATE)
-	parse(POST_PREVIEW_TEMPLATE)
+	parse(POST_TEMPLATE)
 
 	if err != nil {
 		log.Fatal(err)

@@ -31,3 +31,12 @@ a {
 #post_preview:hover {
     background-color: #ffff99;
 }
+
+#post {
+    text-align: center;
+    font-family: sans-serif;
+}
+
+#post_title {
+    font-size: 24px;
+}
