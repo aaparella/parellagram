@@ -8,7 +8,7 @@ type Styles struct {
 const STYLES_TEMPLATE = `
 	{{ define "styles" }}
 		{{ range .Files }}
-			<link rel="stylesheet" href="styles/{{.}}" type="text/css">
+			<link rel="stylesheet" href="/styles/{{.}}" type="text/css">
 		{{ end }}
 	{{ end }}
 	`

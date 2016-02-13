@@ -1,12 +1,3 @@
-body {
-    font-family: sans-serif;
-}
-
-#header {
-    text-align: center;
-    padding: 20px;
-}
-
 #post_preview {
     text-decoration: none;
     text-align: center;
@@ -32,6 +23,11 @@ body {
     text-decoration: italic;
 }
 
+a {
+    text-decoration: none;
+    color: black;
+}
+
 #post_preview:hover {
-    background-color: #ffcc66;
+    background-color: #ffff99;
 }

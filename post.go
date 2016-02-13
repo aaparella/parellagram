@@ -12,18 +12,21 @@ import (
 )
 
 type Post struct {
-	Title   string
-	Date    string // TODO: Use Time struct
-	Preview string
-	Content string
+	Title    string
+	Date     string // TODO: Use Time struct
+	Preview  string
+	Content  string
+	Filename string
 }
 
 const POST_PREVIEW_TEMPLATE = `
 	{{ define "post-preview" }}
+	<a href="/post/{{ .Filename }}">
 		<div id="post_preview">
 			<div class="post_title">{{ .Title }}</div>
 			<div class="post_date">{{ .Date }}</div>
 		</div>
+	</a>
 	{{ end }}
 	`
 
@@ -37,10 +40,10 @@ const POSTS_PREVIEW_TEMPLATE = `
 	{{ end }}
 	`
 
-func createPost(r io.Reader) (*Post, error) {
+func createPost(file *os.File) (*Post, error) {
 	post := &Post{}
 	var err error = nil
-	reader := bufio.NewReader(r)
+	reader := bufio.NewReader(file)
 
 	parse := func(prefix string) string {
 		regex := regexp.MustCompile(prefix + ":")
@@ -54,6 +57,7 @@ func createPost(r io.Reader) (*Post, error) {
 
 	post.Title = parse("Title")
 	post.Date = parse("Date")
+	post.Filename = path.Base(file.Name())
 
 	buffer := bytes.NewBuffer(nil)
 	io.Copy(buffer, reader)
