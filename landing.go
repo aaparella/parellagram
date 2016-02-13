@@ -19,7 +19,9 @@ const LANDING_PAGE_TEMPLATE = `
 			{{ template "styles" .Styles }}
 		</head>
 		<body>
+			<h1 id="header">Parellagram</h1>
 			{{ template "posts-preview" .Posts }}
+		</div>
 		</body>
 	</html>
 	`

@@ -20,7 +20,7 @@ type Post struct {
 
 const POST_PREVIEW_TEMPLATE = `
 	{{ define "post-preview" }}
-		<div id="post">
+		<div id="post_preview">
 			<div class="post_title">{{ .Title }}</div>
 			<div class="post_date">{{ .Date }}</div>
 		</div>
@@ -46,7 +46,7 @@ func createPost(r io.Reader) (*Post, error) {
 		regex := regexp.MustCompile(prefix + ":")
 		line, _ := reader.ReadString('\n')
 		if match := regex.FindStringIndex(line); match != nil {
-			return line[match[1]:]
+			return line[match[1] : len(line)-1]
 		}
 		err = fmt.Errorf("Expected %s string, got : \"%s\"", prefix, line)
 		return ""
