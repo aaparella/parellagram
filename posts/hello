@@ -1,6 +1,8 @@
 Title: Hello, Parellagram
 Date: February 10, 2016
 
-This is the actual content of the web page! Hopefully we can parse this correctly.
+Hello! This is the first actual post written and hosted using my site generator. Two months after registering the domain name, and a good few weeks after just throwing up an "I'm working on it!" message, I actually have something to show. I really don't know what I plan on using this website for, although I do have some plans to expand it's functionality. I can already make blog posts, and those work pretty well. I want to add the ability to to connect to a Github account and pull in information about public repositories, and make a sort of public work page that showcases all of the repositories for that account. It'd make it a lot easier to showcase a persons work. And by a person, I mean me. Because I highly doubt anyone else will use this platform.
 
-This should be on a new line but probably won't be.
+[The app](http://github.com/aaparella/parellagram) that's building and hosting the website is written in Go. It builds the website from simple markdown files for each blog post. Right now it doesn't cache any of the pages, rebuilding them all on each visit. I'm going to update the app to cache web pages and watch the file system, and only update the pages when a new post is added, or an existing post is modified. 
+
+I really don't have much to say, and this post is mostly just to make sure that the Markdown processor is working. C'est la vie!

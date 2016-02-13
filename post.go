@@ -9,6 +9,8 @@ import (
 	"os"
 	"path"
 	"regexp"
+
+	"github.com/russross/blackfriday"
 )
 
 type Post struct {
@@ -72,7 +74,7 @@ func createPost(file *os.File) (*Post, error) {
 
 	buffer := bytes.NewBuffer(nil)
 	io.Copy(buffer, reader)
-	post.Content = string(buffer.Bytes())
+	post.Content = string(blackfriday.MarkdownBasic(buffer.Bytes()))
 
 	return post, err
 }
