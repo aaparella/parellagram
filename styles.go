@@ -1,5 +1,7 @@
 package main
 
+import "log"
+
 type Styles struct {
 	StylePath string
 	Files     []string
@@ -13,13 +15,13 @@ const STYLES_TEMPLATE = `
 	{{ end }}
 	`
 
-func buildStyles() (*Styles, error) {
+func buildStyles() *Styles {
 	styles, err := getDirContents("styles")
 	if err != nil {
-		return nil, err
+		log.Panic("Error building styles : ", err)
 	}
 	return &Styles{
 		StylePath: "./styles/",
 		Files:     styles,
-	}, nil
+	}
 }

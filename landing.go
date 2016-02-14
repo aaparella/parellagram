@@ -50,8 +50,8 @@ func buildLandingPage(page LandingPage, w io.Writer) {
 }
 
 func serveLandingPage(w http.ResponseWriter, r *http.Request) {
-	posts, _ := buildPosts()
-	styles, _ := buildStyles()
+	posts := buildPosts()
+	styles := buildStyles()
 	page := LandingPage{
 		Styles: styles,
 		Posts:  posts,

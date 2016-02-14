@@ -18,6 +18,7 @@ const DETAILED_PAGE_TEMPLATE = `
 		<html>
 			<head>
 				{{ template "styles" .Style }}
+				<title>Parellagram - {{ .Post.Title }}</title>
 			</head>
 			<body>
 				<a href="/">
@@ -29,14 +30,14 @@ const DETAILED_PAGE_TEMPLATE = `
 	`
 
 func serveDetailedPage(w http.ResponseWriter, r *http.Request) {
-	styles, _ := buildStyles()
+	styles := buildStyles()
 	file, err := os.Open(path.Join("./posts", path.Base(r.URL.String())))
 	if err != nil {
 		log.Fatal(err)
 	}
 	post, err := createPost(file)
 	if err != nil {
-		log.Fatal(err)
+		http.Redirect(w, r, "/", http.StatusInternalServerError)
 	}
 
 	detailed := DetailedPage{

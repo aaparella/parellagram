@@ -93,10 +93,10 @@ func createPost(file *os.File) (*Post, error) {
 	return post, err
 }
 
-func buildPosts() ([]*Post, error) {
+func buildPosts() []*Post {
 	filenames, err := getDirContents("posts")
 	if err != nil {
-		return nil, err
+		log.Panic("Error parsing posts : ", err)
 	}
 	posts := make([]*Post, 0)
 	for _, filename := range filenames {
@@ -112,5 +112,5 @@ func buildPosts() ([]*Post, error) {
 		}
 	}
 	sort.Sort(Posts(posts))
-	return posts, nil
+	return posts
 }
