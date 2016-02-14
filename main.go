@@ -10,7 +10,7 @@ func main() {
 	http.HandleFunc("/post/", serveDetailedPage)
 	http.Handle("/styles/", http.StripPrefix("/styles/", http.FileServer(http.Dir("styles"))))
 
-	log.Println("Listening on port 8080")
+	log.Println("Listening on port 80")
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":80", nil)
 }

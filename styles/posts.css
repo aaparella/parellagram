@@ -52,3 +52,7 @@ a {
 #post_body {
     text-align: left;
 }
+
+#post_body a {
+    text-decoration: underline;
+}
