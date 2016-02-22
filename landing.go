@@ -3,18 +3,20 @@ package main
 import (
 	"io"
 	"log"
-	"net/http"
+	"os"
+	"path"
 	"text/template"
 )
 
 type LandingPage struct {
+	Title  string
 	Styles *Styles
 	Posts  []*Post
 }
 
 const LANDING_PAGE_TEMPLATE = `
 	<html>
-		<title>Parellagram</title>
+		<title>{{ .Title }}</title>
 		<head>
 			{{ template "styles" .Styles }}
 		</head>
@@ -49,12 +51,17 @@ func buildLandingPage(page LandingPage, w io.Writer) {
 	_ = tmpl.Execute(w, page)
 }
 
-func serveLandingPage(w http.ResponseWriter, r *http.Request) {
-	posts := buildPosts()
-	styles := buildStyles()
+func saveLandingPage(conf Config) {
+	posts := buildPosts(conf.Resources.Posts)
+	styles := buildStyles(conf.Resources.Styles)
 	page := LandingPage{
+		Title:  conf.Website.Title,
 		Styles: styles,
 		Posts:  posts,
 	}
-	buildLandingPage(page, w)
+	file, err := os.Create(path.Join(conf.Artifacts.Path, "index.html"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	buildLandingPage(page, file)
 }

@@ -33,7 +33,7 @@ func (p Posts) Less(i, j int) bool { return p[j].Date.Before(p[i].Date) }
 const POST_PREVIEW_TEMPLATE = `
 	{{ define "post-preview" }}
 		<div id="post_preview">
-		<a href="/post/{{ .Filename }}">
+		<a href="/posts/{{ .Filename }}">
 			<div class="post_title">{{ .Title }}</div>
 			<div class="post_date">
 				{{ .Date.Month }} {{ .Date.Day }}, {{ .Date.Year }}
@@ -93,8 +93,8 @@ func createPost(file *os.File) (*Post, error) {
 	return post, err
 }
 
-func buildPosts() []*Post {
-	filenames, err := getDirContents("posts")
+func buildPosts(postsPath string) []*Post {
+	filenames, err := getDirContents(postsPath)
 	if err != nil {
 		log.Panic("Error parsing posts : ", err)
 	}

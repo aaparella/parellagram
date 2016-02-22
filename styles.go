@@ -15,8 +15,8 @@ const STYLES_TEMPLATE = `
 	{{ end }}
 	`
 
-func buildStyles() *Styles {
-	styles, err := getDirContents("styles")
+func buildStyles(stylesPath string) *Styles {
+	styles, err := getDirContents(stylesPath)
 	if err != nil {
 		log.Panic("Error building styles : ", err)
 	}

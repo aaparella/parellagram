@@ -3,13 +3,13 @@ package main
 import (
 	"io"
 	"log"
-	"net/http"
 	"os"
 	"path"
 	"text/template"
 )
 
 type DetailedPage struct {
+	Title string
 	Style *Styles
 	Post  *Post
 }
@@ -18,33 +18,38 @@ const DETAILED_PAGE_TEMPLATE = `
 		<html>
 			<head>
 				{{ template "styles" .Style }}
-				<title>Parellagram - {{ .Post.Title }}</title>
+				<title>{{ .Title }} - {{ .Post.Title }}</title>
 			</head>
 			<body>
 				<a href="/">
-					<h1 id="header">Parellagram</h1>
+					<h1 id="header">{{ .Title }}</h1>
 				</a>
 				{{ template "post" .Post }}
 			</body>
 		</html>
 	`
 
-func serveDetailedPage(w http.ResponseWriter, r *http.Request) {
-	styles := buildStyles()
-	file, err := os.Open(path.Join("./posts", path.Base(r.URL.String())))
+func saveDetailedPage(page DetailedPage, conf Config) {
+	p := path.Join(conf.Artifacts.Path, conf.Resources.Posts, page.Post.Filename)
+	file, err := os.Create(p)
 	if err != nil {
 		log.Fatal(err)
 	}
-	post, err := createPost(file)
-	if err != nil {
-		http.Redirect(w, r, "/", http.StatusInternalServerError)
-	}
+	buildDetailedPage(page, file)
+}
 
-	detailed := DetailedPage{
-		Style: styles,
-		Post:  post,
+func saveDetailedPages(conf Config) {
+	posts := buildPosts(conf.Resources.Posts)
+	styles := buildStyles(conf.Resources.Styles)
+	for _, post := range posts {
+		page := DetailedPage{
+			Title: conf.Website.Title,
+			Style: styles,
+			Post:  post,
+		}
+
+		saveDetailedPage(page, conf)
 	}
-	buildDetailedPage(detailed, w)
 }
 
 func buildDetailedPage(page DetailedPage, w io.Writer) {
