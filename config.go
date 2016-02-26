@@ -14,9 +14,6 @@ type Config struct {
 		Posts  string
 		Styles string
 	}
-	Artifacts struct {
-		Path string
-	}
 }
 
 func getConfig() Config {

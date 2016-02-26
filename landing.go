@@ -59,9 +59,10 @@ func saveLandingPage(conf Config) {
 		Styles: styles,
 		Posts:  posts,
 	}
-	file, err := os.Create(path.Join(conf.Artifacts.Path, "index.html"))
+	p := path.Join(os.TempDir(), "parellagram", "index.html")
+	file, err := os.Create(p)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error creating landing page : ", err)
 	}
 	buildLandingPage(page, file)
 }

@@ -30,10 +30,10 @@ const DETAILED_PAGE_TEMPLATE = `
 	`
 
 func saveDetailedPage(page DetailedPage, conf Config) {
-	p := path.Join(conf.Artifacts.Path, conf.Resources.Posts, page.Post.Filename)
+	p := path.Join(os.TempDir(), "parellagram", conf.Resources.Posts, page.Post.Filename)
 	file, err := os.Create(p)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error generating page : ", err)
 	}
 	buildDetailedPage(page, file)
 }
