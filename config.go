@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Website struct {
 		Title string
+		Port  int
 	}
 	Resources struct {
 		Posts  string
