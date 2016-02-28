@@ -45,5 +45,5 @@ func main() {
 	http.Handle("/styles/", http.StripPrefix("/styles/", http.FileServer(http.Dir(conf.Resources.Styles))))
 
 	log.Println("Listening on port :", conf.Website.Port)
-	http.ListenAndServe(fmt.Sprintf(":%d", conf.Website.Port), nil)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", conf.Website.Port), nil))
 }
