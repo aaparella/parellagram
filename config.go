@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"code.google.com/p/gcfg"
+	gcfg "gopkg.in/gcfg.v1"
 )
 
 type Config struct {
