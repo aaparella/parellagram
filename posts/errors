@@ -1,5 +1,5 @@
 Title: Go and Errors as Values
-Date: March 3, 2016
+Date: March 26, 2016
 
 I've been using Go a lot lately (if you haven't noticed already). This website is written in it, and it has quickly become my favorite language. Many people disagree. The most common sticking point with newcomers is its error handling. After reading through the (excellent) (Go introduction)[https://tour.golang.org], people get often caught up with the following :
 

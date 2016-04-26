@@ -1,0 +1,15 @@
+Title: Website Updates
+Date: February 29, 2016
+
+You wouldn't guess it from the look of it, but I've rewritten basically everything on the backend of the website over the past week or so. The big changes are these :
+
+1. Pages are built once, stored in the temp directory for the OS, and then served out of that
+2. Pages are re-built if a post changes. This is accomplished by just watching the file system, and rebuilding the pages when a change is detected.
+
+They're small changes, entirely insignificant for a website with literally non-existant traffic, but they're how it *should* be working. The code for the website can still be viewed at [github](https://www.github.com/aaparella/parellagram). It could still be improved by only rebuilding the landing page and the specific page for that post, and that's what I'll tackle next. And then maybe I'll think about making the website pretty to look at.
+
+Maybe.
+
+Update 3/2/16: The new version of the website is intermittently crashing silently, which is incredibly obnoxious. Reverted to the old version, hopefully this resolves the issue while I try to fix it. So you can basically ignore all of this post. Great.
+
+Update 3/2/16 Later in the day: Turns out it was a malformed URL. Whoops. Should be fixed.
