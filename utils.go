@@ -8,7 +8,13 @@ import (
 func clearTempDirectory(conf Config) {
 	p := path.Join(os.TempDir(), "parellagram")
 	clearDirContents(p)
-	os.Mkdir(path.Join(p, conf.Resources.Posts), os.ModeTemporary)
+	os.Mkdir(path.Join(p, conf.Resources.Posts), os.ModeDir|os.ModeTemporary)
+}
+
+func deleteTempDirectory() {
+	p := path.Join(os.TempDir(), "parellagram")
+	clearDirContents(p)
+	os.Remove(p)
 }
 
 func getDirContents(dirpath string) ([]string, error) {

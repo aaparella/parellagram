@@ -5,8 +5,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"path"
 	"strings"
+	"syscall"
 
 	fswatch "github.com/andreaskoch/go-fswatch"
 )
@@ -36,6 +38,16 @@ func buildWebsitePages(conf Config) {
 }
 
 func main() {
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT)
+
+	go func() {
+		_ = <-sigs
+		log.Println("Cleaning up...")
+		deleteTempDirectory()
+		os.Exit(0)
+	}()
+
 	conf := getConfig()
 	buildWebsitePages(conf)
 
