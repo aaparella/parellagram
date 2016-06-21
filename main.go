@@ -30,7 +30,7 @@ func watch(conf Config) {
 }
 
 func buildWebsitePages(conf Config) {
-	clearTempDirectory()
+	clearTempDirectory(conf)
 	saveDetailedPages(conf)
 	saveLandingPage(conf)
 }

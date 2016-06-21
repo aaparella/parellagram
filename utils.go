@@ -1,17 +1,14 @@
 package main
 
 import (
-	"log"
 	"os"
 	"path"
 )
 
-func clearTempDirectory() {
-	if err := os.RemoveAll(path.Join(os.TempDir(), "parellagram")); err != nil {
-		log.Fatal("Error writing to ", os.TempDir(), " : ", err)
-	}
-	os.Mkdir(path.Join(os.TempDir(), "parellagram"), os.ModeDir|os.ModeTemporary)
-	os.Mkdir(path.Join(os.TempDir(), "parellagram", "posts"), os.ModeDir|os.ModeTemporary)
+func clearTempDirectory(conf Config) {
+	p := path.Join(os.TempDir(), "parellagram")
+	clearDirContents(p)
+	os.Mkdir(path.Join(p, conf.Resources.Posts), os.ModeTemporary)
 }
 
 func getDirContents(dirpath string) ([]string, error) {
@@ -24,4 +21,12 @@ func getDirContents(dirpath string) ([]string, error) {
 		return nil, err
 	}
 	return dir.Readdirnames(0)
+}
+
+func clearDirContents(dirname string) error {
+	if err := os.RemoveAll(dirname); err != nil {
+		return err
+	}
+	os.Mkdir(dirname, os.ModeDir|os.ModeTemporary)
+	return nil
 }

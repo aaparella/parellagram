@@ -6,6 +6,7 @@ import (
 	gcfg "gopkg.in/gcfg.v1"
 )
 
+// Config stores configuration of parellagram website.
 type Config struct {
 	Website struct {
 		Title string
@@ -14,6 +15,13 @@ type Config struct {
 	Resources struct {
 		Posts  string
 		Styles string
+	}
+	Links struct {
+		Twitter   string
+		Email     string
+		Github    string
+		Bitbucket string
+		Gitlab    string
 	}
 }
 

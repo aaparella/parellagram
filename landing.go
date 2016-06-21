@@ -12,6 +12,7 @@ type LandingPage struct {
 	Title  string
 	Styles *Styles
 	Posts  []*Post
+	Navbar map[string]string
 }
 
 const LANDING_PAGE_TEMPLATE = `
@@ -22,6 +23,7 @@ const LANDING_PAGE_TEMPLATE = `
 		</head>
 		<body>
 			<h1 id="header">Parellagram</h1>
+			{{ template "navbar" .Navbar }}
 			{{ template "posts-preview" .Posts }}
 		</div>
 		</body>
@@ -40,6 +42,7 @@ func buildLandingPage(page LandingPage, w io.Writer) {
 	}
 
 	parse(LANDING_PAGE_TEMPLATE)
+	parse(NAVBAR_TEMPLATE)
 	parse(STYLES_TEMPLATE)
 	parse(POSTS_PREVIEW_TEMPLATE)
 	parse(POST_PREVIEW_TEMPLATE)
@@ -54,10 +57,12 @@ func buildLandingPage(page LandingPage, w io.Writer) {
 func saveLandingPage(conf Config) {
 	posts := buildPosts(conf.Resources.Posts)
 	styles := buildStyles(conf.Resources.Styles)
+	navbar := buildNavbar(conf)
 	page := LandingPage{
 		Title:  conf.Website.Title,
 		Styles: styles,
 		Posts:  posts,
+		Navbar: navbar,
 	}
 	p := path.Join(os.TempDir(), "parellagram", "index.html")
 	file, err := os.Create(p)
