@@ -1,7 +1,7 @@
-Title: The FBI, Apple, and You
+Title: The FBI, Security, and Setting a Precedent
 Date: April 25, 2016
 
-A lot has been said about the contention between Apple and the FBI, and a lot is still left to be said. I've been thinking about this issue for a while now, but only felt motivated to write about it after a discussion in one of my classes at UC Davis. The near unanimous decision of the class was that Apple should comply fully with the FBI.
+A lot has been said about the contention between Apple and the FBI, and a lot is still left to be said. I've been thinking about this issue for a while now, but only felt motivated to write about it after a discussion in one of my classes at UC Davis. The near unanimous decision of the class was that Apple should comply with the FBI.
 
 For context, these are the relevant portions (feel free to consult [the full text](http://www.assets.documentcloud.org/documents/2714005/SB-Shooter-Order-Compelling-Apple-Asst-iPhone.pdf)) of the order filed (it has since been withdrawn):
 
@@ -11,24 +11,26 @@ For context, these are the relevant portions (feel free to consult [the full tex
 
     2. Apple's reasonable technical assistance shall accomplish the following three important functions:G 
     (1) It will bypass or disable the auto-erase function whether or not it has been enabled; 
-    (2) it will enable the FBI to subnmit passcodes to the SUBJECT DEVICE for testing electronically ...
+    (2) it will enable the FBI to submit passcodes to the SUBJECT DEVICE for testing electronically ...
 
-    3. Apple's reasonable tehnical assistance may include, but is not limited to: providing the FBI with a 
+    3. Apple's reasonable technical assistance may include, but is not limited to: providing the FBI with a 
     signed iPhone Software file ("SIF") ... that can be loaded onto the SUBJECT DEVICE ... The SIF will be
     coded by Apple with a unique identifier of the phone so that the SIF would only load and execute on the
     SUBJECT DEVICE. Once active on the SUBJECT DEVICE, the SIF would accomplish the three functions specified 
     in paragraph 2.
 
-On the surface, these seem pretty reasonable. After all, they're only after the data on one phone, that of a confirmed terrorist, no less. What's the harm? In an ideal world, in which the above requests were possible, there _would_ be no harm.
+On the surface, these seem reasonable. After all, they're only after the data on one phone, that of a confirmed terrorist, no less. What's the harm? In an ideal world, if the above requests were possible, there _would_ be no harm.
 
-The problem is that a tool like this is not possible. It is impossible to create a tool that allows for access of one specific phone without also allowing it access to any other phone. And once the technology exists it cannot be taken back. If the government is able to force Apple's hand in this case, there is immediately precident for this tool to be reused to access another device. And another device after that. And another after that. 
+The problem is that a tool like this is not possible. Apple cannot create a tool that allows for access to this specific iPhone without also creating a tool that grants access to any iPhone. And once that tool exists it cannot be taken back. If the government is able to force Apple's hand, there is immediately precedent for this tool to be reused to access another device. And another device after that. And another after that. 
 
-This will not be a one time thing. Access to iPhone data or no, there will always be tragedies. What will we say then? "Sorry, but this one isn't sad enough for us to break into that phone / laptop / what have you." Of course not. Many law enforcement personel have stated that, were Apple to comply, they intend to use this precident to unlock many more phones. And it won't stop at phones. Computers, home surveillance systems, private conversations. This has been, and always was, about precedent.
+This would not be a one time thing. Access to iPhone data or no, there will always be tragedies. What will we say to those grieving after a robbery or assault? "Sorry, but this one isn't sad enough for us to break into that phone / laptop / what have you. We promised we'd only do it once!"
 
-The FBI knows this. They have access to phone records from the cell provider, to iCloud backups of the device from Apple. There is precious little to be gained from breaking into the phone, which the San Bernadino police chief openly acknowledged, saying "I'll be honest with you, I think that there is a reasonably good chance that there is nothing of any value on the phone." Apple proposed four different methods of unlocking the phone that did not require intentionally crippling the phones security, but the FBI was not satisfied.
+Many police investigators have said they will push for Apple to unlock other phones if they comply in this case. And it won't stop at phones. Computers, home surveillance systems, private conversations. This has been, and always was, about precedent.
 
-For the FBI, this is not about the San Bernadino shooting. This is about unrestricted access to private information. Information that we have a right to _keep_ private.
+The FBI knows this. They have access to phone records from the cell provider, to iCloud backups of the device from Apple. There is precious little to be gained from breaking into the phone, the San Bernardino police has said as much himself. "I'll be honest with you, I think that there is a reasonably good chance that there is nothing of any value on the phone." Apple proposed four different methods of unlocking the phone that did not involve crippling the phones security. The FBI was not satisfied.
+
+Because this is not about the San Bernardino shooting. This is about unrestricted access to private information. Information that we have a right to _keep_ private.
 
 
 
-**Note**: The FBI has since withdrawn their request, and gained access to the iPhone through a third party. They announced their intention to do explore this option the day before the case hearing. To date, no advancements have been made as a result of the information accessed.
+**Note**: The FBI has since withdrawn their request, and gained access to the iPhone through a third party. They announced their intention to explore this option the day before the case hearing. To date, no advancements have been made as a result of the information accessed.
