@@ -55,6 +55,7 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir(path.Join(os.TempDir(), "parellagram"))))
 	http.Handle("/styles/", http.StripPrefix("/styles/", http.FileServer(http.Dir(conf.Resources.Styles))))
+	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(conf.Resources.Images))))
 
 	log.Println("Listening on port :", conf.Website.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", conf.Website.Port), nil))

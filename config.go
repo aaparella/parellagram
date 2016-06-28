@@ -15,6 +15,7 @@ type Config struct {
 	Resources struct {
 		Posts  string
 		Styles string
+		Images string
 	}
 	Links struct {
 		Twitter   string

@@ -1,0 +1,213 @@
+Title: Dynamic Image Resizing with Go
+Date: June 28, 2016
+
+In my junior year of college I dropped a class at the last minute to enroll in a class that I knew practically nothing about. That class, which just so happened to be on Computer Vision, is one of the best classes I've ever taken. In addition, it introduced me to a ridiculously cool algorithm called Seam Carving. 
+
+The general idea is this: Instead of simply cropping or scaling an image when we want to resize it, and lose a lot of important information and/or distort the image in the process, how about we try to find which parts of the image contain the least visual information, and remove just those parts instead? 
+
+![Original image](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Broadway_tower_edit.jpg/548px-Broadway_tower_edit.jpg)
+
+Imagine starting with the above picture. It's a nice picture, with a wide open sky and a cool looking castle. But it's a bit too large for our needs, and we'd like to make it smaller. What are our options?
+
+![Scaled image](https://upload.wikimedia.org/wikipedia/commons/a/a3/Broadway_tower_edit_scale.png)
+
+We may first consider scaling it (above). The image is smaller, great! All of the important details (the person on the left, and the castle on the right) are all there, awesome! Unfortunately, scaling the image has distorted the size and shape of the castle, and the end picture doesn't look all that great. While that's acceptable in some scenarios, we demand pictures of the highest quality, and this simply will not do.
+
+![Cropped image](https://upload.wikimedia.org/wikipedia/commons/e/ef/Broadway_tower_edit_cropped.png)
+
+We may then consider cropping the image (above). It's pretty immediately apparent why this is an unideal solution. Half of the castle is cut off, and the person on the left is now in a somewhat awkward spot right on the edge of the image. We've stayed true to the original form of the image, but we've lost a lot of the important information of the image. I was particularly fond of the right hand turret, and would love it if we could somehow keep it in the image. Luckily for us, we can!
+
+![Seam carved image](https://upload.wikimedia.org/wikipedia/commons/e/ed/Broadway_tower_edit_Seam_Carving.png)
+
+Well look at that! The picture has been reduced to the perfect size, the castle is intact, and the person on the left is no longer in danger of falling off the side of the picture! This image has been resized using Seam Carving, an algorithm that dynamically identifies regions of the image that are "less important" and prioritizes removing those regions first. As we can see, the algorithm removed the blue sky to the right of the castle, as well as cut down on the open sky in the middle of the image.
+
+How did it determine that those areas are what should be removed first? Let's walk through a Go implementation of the algorithm to find out. We will walk through the different steps of the algorithm, and how they play out on the following image. The algorithm here is for reducing the height of an image, but can easily be adapted to reduce the width as well.
+
+![Boat image](http://web.cs.ucdavis.edu/~yjlee/teaching/resources/inputSeamCarvingPrague.jpg)
+
+The algorithm consists of three major steps: generating an energy map from the source image, location of the lowest cost "seam", and the removal of that seam from the image. 
+
+	// ReduceHeight uses seam carving to reduce height of given image by n pixels.
+    func ReduceHeight(im image.Image, n int) image.Image {
+	    energy := GenerateEnergyMap(im)
+	    seam := GenerateSeam(energy)
+	    return RemoveSeam(im, seam)
+    }
+
+The energy map calculates how much "energy" a given point in the image contains, that is to say how much information the point contains. Low energy pixels blend in with surrounding pixels, and thus can be removed with little consequence. The energy map can thus be calculated by taking the horizontal and vertical gradients of the image. This creates an energy map, in which each point represents how similar or different that point in the original image was to its surrounding pixels.
+
+Fortunately this can be calculated by the convolution of a specific filter (in this case a sobel filter) over the input image. I won't discuss convolution in detail here, but the important thing to know is that by applying a sobel filter to a grayscale copy of the input image (and optionally a smoothing filter, like a gaussian filter) we can easily take the gradient of the input image. To accomplish this I used the wonderful [GIFT](http://github.com/disintegration/gift) library.
+
+	// GenerateEnergyMap applies grayscale and sobel filters to the input image to create an energy map.
+    func GenerateEnergyMap(im image.Image) image.Image {
+	    g := gift.New(gift.Grayscale(), gift.Sobel())
+	    res := image.NewRGBA(im.Bounds())
+	    g.Draw(res, im)
+	    return res
+    }
+
+![Energy Map](/images/energy.jpg)
+
+As one might expect, the areas with the highest energy are edges and those with the lowest energy are regions with large expanses of a small amount of similar colors (the sky). From this we can predict that, when reducing the height of the image, almost all of the reductions will take place in the sky, and other parts of the image should remain unchanged.
+
+The next step is determining which pixels to remove. As we are reducing the height of the image by one pixel, we need to find a single pixel in each column of the image that we can remove. We want this series of pixels to have the lowest total energy possible, so that removing the seam has the smallest possible impact on the picture. Identifying the best pixels to remove is done in two steps.
+
+    // GenerateSeam returns the optimal horizontal seam for removal.
+    func GenerateSeam(im image.Image) Seam {
+        mat := GenerateCostMatrix(im)
+        return FindLowestCostSeam(mat)
+    }
+
+The first step is to generate a cost matrix that contains "seams," sequences of eight connected pixels running horizontally through the image, with the lowest possible cumulative energy.
+
+This time we'll look at the code first. 
+
+	// GenerateCostMatrix creates a matrix indicating the cumulative energy of the 
+	// lowest cost seam from the left of the image to each pixel.
+	//
+	// mat[x][y] is the cumulative energy of the seam that runs from the left of 
+	// the image to the pixel at column x, row y.
+	func GenerateCostMatrix(im image.Image) [][]float64 {
+		min, max := im.Bounds().Min, im.Bounds().Max
+		height, width := max.Y-min.Y, max.X-min.X
+	
+		mat := make([][]float64, width)
+		for x := min.X; x < max.X; x++ {
+			mat[x-min.X] = make([]float64, height)
+		}
+		
+		// Initialize first column of matrix
+		for y := min.Y; y < max.Y; y++ {
+			e, _, _, a := im.At(0, y).RGBA()
+			mat[0][y-min.Y] = float64(e) / float64(a)
+		}
+	
+		updatePoint := func(x, y int) {
+			e, _, _, a := im.At(x, y).RGBA()
+	
+			up, down := math.MaxFloat64, math.MaxFloat64
+			left := mat[x-1][y]
+			if y != min.Y {
+				up = mat[x-1][y-1]
+			}
+			if y < max.Y-1 {
+				down = mat[x-1][y+1]
+			}
+			val := math.Min(float64(left), math.Min(float64(up), float64(down)))
+			mat[x][y] = val + (float64(e) / float64(a))
+		}
+	
+		// Calculate the remaining columns iteratively
+		for x := min.X + 1; x < max.X; x++ {
+			for y := min.Y; y < max.Y; y++ {
+				updatePoint(x, y)
+			}
+		}
+	
+		return mat
+	}
+
+In the above function we start with a matrix that has the same dimensions as the image. We then iteratively compute, from the leftmost column to the rightmost, the lowest cumulative energy path to each pixel. This is done by, for each pixel in a column, adding the energy for that pixel to the cumulative energy for either the pixel to the left, upper left, or lower left, whichever has the lowest cumulative energy. This also allows us to remove a seam that is not strictly linear, allowing for greater flexibility, and for more fine grained removal. 
+
+We can then use this matrix to determine which pixels to remove. We start with a seam with room for one point per column, and find the beginning of the lowest cost seam.
+
+    type Seam []Point
+
+    type Point struct {
+        X, Y int
+    }
+
+    // FindLowestCostSeam uses an cost matrix to find the optimal seam for removal.
+	func FindLowestCostSeam(mat [][]float64) Seam {
+		width, height := len(mat), len(mat[0])
+
+		seam := make([]Point, width)
+
+		min, y := math.MaxFloat64, 0
+		for ind, val := range mat[width-1] {
+			if val < min {
+				min = val
+				y = ind
+			}
+		}
+
+		seam[width-1] = Point{X: width - 1, Y: y}
+	
+We then work our way from the right side of the matrix to the left. With each iteration, check the three pixels to the immediate left of our last pixel, and add the one with the lowest cumulative energy to the seam.
+	
+	for x := width - 2; x >= 0; x-- {
+		left := mat[x][y]
+		up, down := math.MaxFloat64, math.MaxFloat64
+		if y != 0 {
+			up = mat[x][y-1]
+		}
+		if y != height-1 {
+			down = mat[x][y+1]
+		}
+	
+		if up < left && up < down {
+			seam[x] = Point{X: x, Y: y - 1}
+			y = y - 1
+		} else if left < up && left < down {
+			seam[x] = Point{X: x, Y: y}
+			y = y
+		} else {
+			seam[x] = Point{X: x, Y: y + 1}
+			y = y + 1
+		}
+	}
+
+We can check our logic visually by drawing the seam on top of the image, and making sure that the seam passes through regions of the image that we would expect. The below image is the first seam generated by the above code, drawn on top of the input image in red. 
+
+![Seam](/images/seam.jpg)
+
+And that's the algorithm! By writing a quick function that creates a new image with the seam removed, and by throwing the body of ReduceHeight into a loop, we can make a function that repeatedly carves out the lowest energy seam possible to resize an image. 
+
+
+    // RemoveSeam creates a copy of the provided image, with the pixels at 
+    // the points in the provided seam removed.
+    func RemoveSeam(im image.Image, seam Seam) image.Image {
+        b := im.Bounds()
+        out := image.NewRGBA(image.Rect(0, 0, b.Dx(), b.Dy()-1))
+        min, max := b.Min, b.Max
+
+        for _, point := range seam {
+            x := point.X
+
+            for y := min.Y; y < max.Y; y++ {
+                if y == point.Y {
+                    continue
+                }
+
+                if y > point.Y {
+                    out.Set(x, y-1, im.At(x, y))
+                } else {
+                    out.Set(x, y, im.At(x, y))
+                }
+            }
+        }
+
+        return out
+    }
+
+	// ReduceHeight uses seam carving to reduce height of given image n pixels.
+	func ReduceHeight(im image.Image, n int) image.Image {
+		for x := 0; x < n; x++ {
+			energy := GenerateEnergyMap(im)
+			seam := GenerateSeam(energy)
+			im = RemoveSeam(im, seam)
+		}
+		return im
+	}
+
+And the result of removing fifty pixels from the input image in this fashion. We can see that the area with the least visual information (the sky) has been reduced while other regions of the image such as the boat, water, and buildings, remain intact. Because the sky was almost completely uniform, these removals are almost completely unnoticeable.
+
+![Image with fifty rows removed](/images/reduced.jpg)
+
+The final implementation can be found on GitHub. All functions are exported, so feel free to play around with them however you'd like.
+
+This is only a surface level introduction to seam carving. I highly recommend you read the [original paper](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&uact=8&ved=0ahUKEwiaoeON5svNAhUQx2MKHTDRDOkQFggqMAE&url=http%3A%2F%2Fgraphics.cs.cmu.edu%2Fcourses%2F15-463%2F2007_fall%2Fhw%2Fproj2%2Fimret.pdf&usg=AFQjCNEUEIc4D2XxI1sU2lhPMN9O73c3bA&sig2=Hrn1QGgpJ4-YjdEglM4FLw) on the subject, or a [video](https://www.youtube.com/watch?v=6NcIJXTlugc) that demonstrates many possible applications of the algorithm. These applications include object removal, increasing the size of images, and more. 
+
+This is not to say that seam carving does not come with caveats. As discussed in the resources linked above, many different energy functions can be explored, and this approach handles pictures of items with very strict spatial relationships (such as a human face) very poorly. There are means by which these can be avoided, but those will not be discussed here.
+
+Feel free to reach out if you have any comments or questions about this post, the algorithm, or anything else you'd care to discuss.
