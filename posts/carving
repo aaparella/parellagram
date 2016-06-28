@@ -204,7 +204,7 @@ And the result of removing fifty pixels from the input image in this fashion. We
 
 ![Image with fifty rows removed](/images/reduced.jpg)
 
-The final implementation can be found on GitHub. All functions are exported, so feel free to play around with them however you'd like.
+The final implementation can be found on [Github](https://github.com/aaparella/carve). All functions are exported, so feel free to play around with them however you'd like.
 
 This is only a surface level introduction to seam carving. I highly recommend you read the [original paper](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&uact=8&ved=0ahUKEwiaoeON5svNAhUQx2MKHTDRDOkQFggqMAE&url=http%3A%2F%2Fgraphics.cs.cmu.edu%2Fcourses%2F15-463%2F2007_fall%2Fhw%2Fproj2%2Fimret.pdf&usg=AFQjCNEUEIc4D2XxI1sU2lhPMN9O73c3bA&sig2=Hrn1QGgpJ4-YjdEglM4FLw) on the subject, or a [video](https://www.youtube.com/watch?v=6NcIJXTlugc) that demonstrates many possible applications of the algorithm. These applications include object removal, increasing the size of images, and more. 
 
