@@ -54,6 +54,7 @@ func main() {
 	go watch(conf)
 
 	http.Handle("/", http.FileServer(http.Dir(path.Join(os.TempDir(), "parellagram"))))
+	http.HandleFunc("/uptime", Uptime)
 	http.Handle("/styles/", http.StripPrefix("/styles/", http.FileServer(http.Dir(conf.Resources.Styles))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(conf.Resources.Images))))
 
