@@ -88,7 +88,7 @@ func createPost(file *os.File) (*Post, error) {
 
 	buffer := bytes.NewBuffer(nil)
 	io.Copy(buffer, reader)
-	post.Content = string(blackfriday.MarkdownBasic(buffer.Bytes()))
+	post.Content = string(blackfriday.MarkdownCommon(buffer.Bytes()))
 
 	return post, err
 }
